@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+ 
+    <!-- 分发器 -->
+    <bean id="urlMapping"
+       class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+       <property name="mappings">
+           <props>
+              <prop key="/user.do">userController</prop>
+              <prop key="/device.do">deviceController</prop>
+           </props>
+       </property>
+    </bean>
+	<!-- 
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">  
+	 <property name="messageConverters">  
+	  <list>  
+	   <bean  
+	    class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />  
+	  </list>  
+	 </property>  
+	</bean> 
+	
+	
+	<bean class="org.springframework.web.servlet.view.BeanNameViewResolver">  
+	 <property name="order" value="1" />  
+	</bean>  
+	 -->
+	
+	
+	<!-- DAO BEANS -->
+	<bean id="UserDAO" class="com.vmc.pojo.UserDAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="DeviceDAO" class="com.vmc.pojo.DeviceDAO">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	
+	<!-- CONTROLLER BEANS -->
+	
+	<bean name="methodNameResolver" class="org.springframework.web.servlet.mvc.multiaction.ParameterMethodNameResolver">
+		<property name="paramName">
+			<value>command</value>
+		</property>
+		<property name="defaultMethodName">
+			<value>addUser</value>
+		</property>
+	</bean>
+	<bean id="userController"
+       class="com.vmc.controller.UserController">
+		<property name="userService">
+			<ref bean="userManagerService"/>
+		</property>
+		<property name="methodNameResolver">
+			<ref bean="methodNameResolver"></ref>
+		</property>
+    </bean>
+       
+	<bean id="deviceController"
+       class="com.vmc.controller.DeviceController"/>
+	
+	<!-- SERVICE BEANS -->
+	<bean id="userManagerService" class="com.vmc.service.UserManagerService">
+		<property name="userDao">
+			<ref bean="UserDAO"/>
+		</property>
+	</bean>
+	
+</beans>
